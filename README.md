@@ -7,6 +7,7 @@
 *A cinematic, browser-based sales tool that replaces fragmented pitch decks with a single, immersive destination experience.*
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-C9973A?style=for-the-badge)](https://the-dream-deck.vercel.app)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel)](https://vercel.com/ganeshadapnors-projects/the-dream-deck)
 [![GitHub](https://img.shields.io/badge/GitHub-the--dream--deck-181717?style=for-the-badge&logo=github)](https://github.com/GaneshAdapnor/the-dream-deck)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://typescriptlang.org)
