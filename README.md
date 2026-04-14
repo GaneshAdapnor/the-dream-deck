@@ -1,74 +1,175 @@
-# American Dream — Interactive Sales Deck
+<div align="center">
 
-A world-class, fully interactive browser-based sales tool for **American Dream** (East Rutherford, NJ) — the Western Hemisphere's largest mixed-use entertainment and retail destination. Built for a commercial sales team pitching prospective tenants, sponsors, and event partners.
+# The Dream Deck
 
-**Live Demo:** _Deploy to Vercel/Netlify and add URL here_
+### Interactive Sales Platform for American Dream — East Rutherford, NJ
+
+*A cinematic, browser-based sales tool that replaces fragmented pitch decks with a single, immersive destination experience.*
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-C9973A?style=for-the-badge)](https://the-dream-deck.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-the--dream--deck-181717?style=for-the-badge&logo=github)](https://github.com/GaneshAdapnor/the-dream-deck)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev)
+[![GSAP](https://img.shields.io/badge/GSAP-GreenSock-88CE02?style=for-the-badge)](https://greensock.com)
 
 ---
 
-## What This Is
+</div>
 
-A purpose-built sales experience that replaces the fragmented "YouTube + PDF + spreadsheet" pitch process with a single, cinematic, self-contained web application. It works equally well screen-shared on a live sales call or sent as a standalone link.
+## The Problem This Solves
 
-### Sections (Non-Linear Navigation)
+Today, pitching a property like American Dream means manually pulling up a YouTube video, jumping between PDFs, opening a separate demographics spreadsheet, and verbally narrating what prospects should be seeing.
 
-| Section | Purpose |
-|---|---|
-| **Hero** | Cinematic opener — immediate impact, brand identity, 3 CTA paths |
-| **The Property** | Animated stats, location data, scale, catchment area |
-| **Retail** | Leasing tiers, featured tenants, brand marquee |
-| **Luxury** | Premium wing positioning, luxury tenant roster |
-| **Dining & Lifestyle** | F&B portfolio, dining concepts, F&B leasing CTA |
-| **Entertainment** | Interactive attraction switcher (DreamWorks, Nickelodeon, Big SNOW, Ice Rink) |
-| **Events & Platform** | Event types, past highlights, venue specs, performing arts + expo callouts |
-| **Partner With Us** | Multi-path inquiry form (Leasing / Events / Sponsorship) |
+**That's broken.**
+
+This tool eliminates all of that friction. It's a self-contained, interactive sales experience that works on a live screen-shared call *or* as a standalone link a prospect can explore alone — no salesperson required.
+
+---
+
+## Live Experience
+
+> The deck is structured around 8 non-linear sections. The prospect controls their journey — nothing is linear, nothing is forced.
+
+| # | Section | Business Purpose |
+|---|---|---|
+| 1 | **Hero** | Cinematic opening — immediate scale and energy within 3 seconds |
+| 2 | **The Property** | Location, catchment, scale — data made visual |
+| 3 | **Retail** | Leasing tiers, tenant roster, inquiry CTA |
+| 4 | **Luxury** | Elevated wing positioning, luxury brand adjacency |
+| 5 | **Dining & Lifestyle** | F&B as a destination, not an afterthought |
+| 6 | **Entertainment** | The 4 category-defining attractions — horizontal scroll experience |
+| 7 | **Events & Platform** | Concert, activation, convention, and venue capabilities |
+| 8 | **Partner With Us** | 3-path inquiry form: Leasing · Events · Sponsorship |
 
 ---
 
 ## Tech Stack
 
-| Tool | Purpose |
-|---|---|
-| **Vite 6 + React 19** | Fast build tooling, component architecture |
-| **TypeScript** | Type-safe components and data contracts |
-| **Tailwind CSS 3** | Utility-first styling with custom design tokens |
-| **Framer Motion** | Scroll-triggered reveals, page-level animations, AnimatePresence transitions |
-| **react-intersection-observer** | Efficient scroll-based section detection |
+| Layer | Technology | Why |
+|---|---|---|
+| **Framework** | React 19 + Vite 6 | Fast dev/build cycle, modern component architecture |
+| **Language** | TypeScript 5 | Type-safe props, data contracts, zero runtime surprises |
+| **Styling** | Tailwind CSS 3 | Custom design token system, utility-first, no CSS drift |
+| **Animation** | GSAP + ScrollTrigger | Industry-standard for premium web animation — used by Apple, Disney |
+| **Smooth Scroll** | Lenis | Physics-based scrolling wired directly to GSAP ticker |
+| **Transitions** | Framer Motion | AnimatePresence for section reveals and modal transitions |
+| **Build** | Vite with manual chunk splitting | Vendor chunks load in parallel — no single large bundle |
 
 ---
 
-## Setup
+## Key Interactions
+
+### Preloader / Splash Screen
+Letter-by-letter character reveal of "American Dream" with animated gold grid and corner marks — sets the cinematic tone before the page loads.
+
+### Custom Magnetic Cursor
+A gold dot + ring that follows the mouse with GSAP lerp-based lag. Expands and displays contextual labels ("Leasing", "Play", "Inquire") on hover. Native cursor hidden on pointer devices.
+
+### Hero — GSAP Text Reveal
+Staggered timeline: gold rule → eyebrow → character-split headline (each letter individually animated) → subtitle → pill tags → CTAs. YouTube video background (fullscreen iframe cover technique) plays behind everything.
+
+### Entertainment — GSAP Horizontal Scroll
+The entertainment section pins in place while 4 full-viewport attraction cards scroll horizontally. Each card has its own image parallax effect (containerAnimation). The most technically demanding interaction in the project.
+
+### Animated Stat Counters
+Pure GSAP tweens on `data-target` elements — no React state updates during animation. Counters start when the section enters the viewport, using `easeOutQuart` for a premium feel.
+
+### 3D Tilt Cards
+Mouse-position-driven `perspective + rotateX/Y` transform on event cards. Resets smoothly on mouse leave via CSS transition.
+
+### Scroll Progress Bar
+Gold line grows along the sidebar rail (desktop) and top edge (mobile), driven via DOM ref — no React state, no re-renders.
+
+---
+
+## Architecture
+
+```
+src/
+├── components/
+│   ├── Cursor.tsx              # Custom magnetic cursor (GSAP-powered)
+│   ├── Preloader.tsx           # Cinematic splash screen
+│   ├── Navigation.tsx          # Non-linear sidebar + mobile nav + progress bar
+│   ├── Hero.tsx                # GSAP text reveal + YouTube video background
+│   ├── TiltCard.tsx            # Reusable 3D perspective tilt wrapper
+│   └── sections/
+│       ├── Overview.tsx        # Animated stat counters + location strip
+│       ├── Retail.tsx          # Leasing tiers + brand marquee
+│       ├── Luxury.tsx          # Premium wing + brand grid
+│       ├── Dining.tsx          # Dining concepts grid
+│       ├── Entertainment.tsx   # GSAP horizontal scroll (pinned)
+│       ├── Events.tsx          # Event types + past highlights + venue modules
+│       └── Contact.tsx         # Multi-path inquiry form
+├── data/
+│   └── content.ts              # Single source of truth for all copy + config
+├── hooks/
+│   ├── useCountUp.ts           # Animated number counter hook
+│   └── useActiveSection.ts     # IntersectionObserver nav state
+└── index.css                   # Tailwind layers + global design tokens + CSS classes
+```
+
+**Adding a new section takes 3 steps:**
+1. Add to `NAV_ITEMS` in `content.ts`
+2. Create `src/components/sections/NewSection.tsx`
+3. Import and render in `App.tsx`
+
+No structural changes required.
+
+---
+
+## Performance
+
+| Chunk | Size (gzip) |
+|---|---|
+| App logic | **14 kB** |
+| GSAP | 44 kB |
+| Framer Motion | 43 kB |
+| React + ReactDOM | 58 kB |
+| Lenis | 5 kB |
+| **Total** | **~165 kB** |
+
+- Vendor chunks load in parallel (manual chunk splitting via `vite.config.ts`)
+- All below-fold images use native `loading="lazy"`
+- YouTube video is facade-loaded (thumbnail → iframe on click, not on page load)
+- GSAP animations are scroll-triggered, not load-triggered
+- Lenis smooth scroll adds zero layout cost
+
+---
+
+## Setup & Running Locally
 
 ```bash
-# Clone and install
-git clone <repo-url>
-cd american-dream-sales-deck
+# 1. Clone
+git clone https://github.com/GaneshAdapnor/the-dream-deck.git
+cd the-dream-deck
+
+# 2. Install
 npm install
 
-# Development
+# 3. Run
 npm run dev
-
-# Production build
-npm run build
-
-# Preview production build locally
-npm run preview
 ```
 
-### Deploy to Vercel
+Open **http://localhost:5173**
 
 ```bash
-npm i -g vercel
-vercel --prod
+npm run build    # Production build → dist/
+npm run preview  # Preview production build locally
 ```
 
-Or connect your GitHub repo to Vercel — it detects Vite automatically, no config needed.
+---
 
-### Deploy to Netlify
+## Deploy
 
-Add a `netlify.toml` at the root:
+**Vercel (recommended — zero config)**
+```bash
+npx vercel --prod
+```
 
+**Netlify**
 ```toml
+# netlify.toml
 [build]
   command = "npm run build"
   publish = "dist"
@@ -76,106 +177,65 @@ Add a `netlify.toml` at the root:
 
 ---
 
-## Replacing the Hero Video
-
-In `src/components/Hero.tsx`, update the `HERO_VIDEO_ID` constant to the official American Dream YouTube video ID:
-
-```ts
-const HERO_VIDEO_ID = 'YOUR_VIDEO_ID_HERE'
-```
-
-The video loads on-demand (facade pattern) — clicking "Watch the Story" injects the iframe. This preserves the 90+ Lighthouse score.
-
----
-
-## Architecture: Expandable by Design
-
-```
-src/
-├── components/
-│   ├── Navigation.tsx          # Non-linear sidebar nav + mobile menu
-│   ├── Hero.tsx                # Cinematic opener with image carousel + video modal
-│   └── sections/               # One file per section — trivial to add more
-│       ├── Overview.tsx
-│       ├── Retail.tsx
-│       ├── Luxury.tsx
-│       ├── Dining.tsx
-│       ├── Entertainment.tsx
-│       ├── Events.tsx
-│       └── Contact.tsx
-├── data/
-│   └── content.ts              # All copy, stats, and config in one place
-├── hooks/
-│   ├── useCountUp.ts           # Animated number counter
-│   └── useActiveSection.ts     # IntersectionObserver-based nav state
-└── index.css                   # Tailwind layers + global design tokens
-```
-
-**To add a new module** (e.g., a Sponsorship sub-section):
-
-1. Add entry to `NAV_ITEMS` in `content.ts`
-2. Create `src/components/sections/Sponsorship.tsx`
-3. Import and render `<Sponsorship />` in `App.tsx`
-
-No architectural changes required.
-
----
-
 ## Design Decisions
 
-### Property: American Dream (East Rutherford, NJ)
-
-Chosen for:
-- Most ambitious attractions portfolio in North America (DreamWorks Water Park, Nickelodeon Universe, Big SNOW — all "only/largest in Western Hemisphere" superlatives)
-- NYC metro proximity — largest consumer catchment on earth
-- Brand new (2019–2021) — compelling "future of retail" narrative
-- Adjacent to MetLife Stadium — events/sports crossover story
+### Why American Dream?
+- Most ambitious mixed-use property in North America — DreamWorks Water Park (largest indoor waterpark in Western Hemisphere), Nickelodeon Universe (largest indoor theme park in Western Hemisphere), Big SNOW (only indoor real-snow ski slope in North America)
+- NYC metro proximity — largest consumer catchment on earth (40M+ within 1 hour)
+- Adjacent to MetLife Stadium — events and sports crossover narrative
+- Opened 2019–2021 — "future of retail" story is still being written
 
 ### Visual Language
+- **Dark luxury palette** (`#08090A` base, `#C9973A` gold) — Apple, Tesla, Saint Laurent as reference points
+- **Cormorant Garamond** — editorial, high-fashion display type
+- **Inter** — clean, readable body and UI text
+- Gold shimmer text on hero headlines — premium signal without gimmick
+- Every section stays dark — the immersive environment never breaks
 
-- **Dark luxury palette** (`#08090A` base, `#C9973A` gold) — inspired by Apple, Tesla, Saint Laurent
-- **Cormorant Garamond** for display type — editorial, fashion-forward
-- **Inter** for body/UI — clean, modern, readable
-- Gold shimmer text effect on key headlines — conveys premium without gimmick
-- No white backgrounds — every section maintains the immersive dark environment
-
-### Performance Strategy
-
-- Hero video uses facade pattern (thumbnail → iframe on click) — not autoplay on load
-- Images use native `loading="lazy"` on all below-fold assets
-- Ken Burns effect is pure CSS animation — zero JS overhead
-- Framer Motion animations are scroll-triggered, not load-triggered
-- Bundle: **113 kB gzipped** (Framer Motion is the largest dependency at ~50 kB)
-
-### Non-Linear Navigation
-
-Left sidebar on desktop, slide-down menu on mobile. `IntersectionObserver` tracks the active section in real time. Any section is one click away at all times — the user is never forced through a linear sequence.
+### Product Thinking
+- **Non-linear navigation** — the deck works as a standalone prospect tool, not just a screen-share
+- **3 CTA paths** — Leasing, Events, Sponsorship all lead to tailored inquiry forms
+- **Content in `content.ts`** — a sales team or CMS can update stats, copy, and tenants without touching components
 
 ---
 
 ## AI Tools Used
 
-| Tool | How It Was Used |
+| Tool | Usage |
 |---|---|
-| **Claude (Anthropic)** | Full application architecture, all React/TypeScript components, Tailwind config, design system, content strategy, and copywriting |
-| **Midjourney / DALL·E** | Would generate property-specific renderings, luxury interior visuals, and hero imagery (currently using Unsplash placeholders for speed) |
-| **Unsplash** | Placeholder photography across all sections — to be replaced with official American Dream assets and AI-generated imagery |
+| **Claude (Anthropic)** | Architecture planning, all React/TypeScript/CSS components, GSAP animation design, content strategy, copywriting, and performance optimization |
+| **GSAP (GreenSock)** | ScrollTrigger horizontal pinning, character-split text reveals, counter animations, cursor physics |
+| **Unsplash** | Placeholder photography — to be replaced with official American Dream assets or AI-generated property-specific imagery |
+| **Midjourney / DALL·E** | Intended for AI-generated hero renderings and attraction visuals not publicly available |
 
 ---
 
-## What I'd Improve With More Time
+## What I'd Build Next
 
-1. **Real video assets** — Embed the official American Dream promo as an autoplaying muted hero background, replacing the static image carousel
-2. **AI-generated hero imagery** — Midjourney renderings of the property's attractions to replace stock photography
-3. **Interactive catchment map** — D3 or Mapbox visualization showing 1-hour drive-time population density around the property
-4. **Leasing sub-module** — Clickable floor plan with available space filterable by zone, category, and square footage
-5. **Sponsorship module** — Tiered partner packages with reach data, activation examples, and a rate card
-6. **GSAP ScrollTrigger** — More complex parallax and text-split reveal effects beyond Framer Motion's capabilities
-7. **CMS integration** — Move `content.ts` to Sanity or Contentful so the sales team can update stats and copy without a developer
-8. **Analytics** — PostHog event tracking to surface which sections prospects engage with most, informing sales follow-up
+| Priority | Feature |
+|---|---|
+| 🔴 High | **Real video background** — Official American Dream YouTube promo as autoplaying muted hero |
+| 🔴 High | **AI-generated visuals** — Midjourney renderings of each attraction to replace stock imagery |
+| 🟡 Medium | **Interactive floor plan** — Clickable leasing map filterable by zone, category, sq ft |
+| 🟡 Medium | **Sponsorship module** — Tiered partner packages with reach data and a rate card |
+| 🟡 Medium | **CMS integration** — Sanity or Contentful so sales team owns copy without a developer |
+| 🟢 Low | **Prospect analytics** — PostHog events to surface which sections drive the most engagement |
+| 🟢 Low | **Catchment map** — D3/Mapbox visualization of 1-hour drive-time population density |
 
 ---
 
-## Content Note
+## Project Brief
 
-All statistics and tenant references reflect publicly available information about American Dream as of 2024–2025. Contact and inquiry information is illustrative — update with real team contacts before deploying to prospects.
+Built as a response to the following brief:
+
+> *"Build the tool that replaces [the fragmented pitch process]. A cross between a high-end pitch deck, a luxury brand website, and an immersive destination experience — all in one. The visual polish of a luxury brand and the interactivity of a modern web experience."*
+
+---
+
+<div align="center">
+
+Built by **Ganesh** · April 2026
+
+*American Dream · East Rutherford, NJ · Gateway to New York City*
+
+</div>
