@@ -1,9 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { STATS } from '../../data/content'
-
-gsap.registerPlugin(ScrollTrigger)
 
 function formatValue(val: number, fmt: string): string {
   if (fmt === 'compact') {
@@ -25,56 +22,50 @@ export default function Overview() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // ── Heading lines stagger in ──
+      // Heading lines stagger in on mount
       gsap.from('.ov-heading', {
         opacity: 0, y: 32,
         duration: 0.9,
         stagger: 0.12,
         ease: 'power4.out',
-        scrollTrigger: { trigger: '.ov-heading', start: 'top 82%' },
+        delay: 0.1,
       })
 
-      // ── Stat counters animate up ──
-      document.querySelectorAll<HTMLElement>('.ov-stat').forEach((el) => {
+      // Stat counters animate up on mount
+      document.querySelectorAll<HTMLElement>('.ov-stat').forEach((el, idx) => {
         const target  = Number(el.dataset.target)
         const fmt     = el.dataset.fmt ?? 'number'
         const suffix  = el.dataset.suffix ?? ''
         const obj     = { val: 0 }
 
-        ScrollTrigger.create({
-          trigger: el,
-          start: 'top 85%',
-          once: true,
-          onEnter: () => {
-            gsap.to(obj, {
-              val: target,
-              duration: 2,
-              ease: 'power3.out',
-              onUpdate: () => {
-                const display = el.querySelector<HTMLSpanElement>('.ov-stat-num')
-                if (display) display.textContent = formatValue(Math.round(obj.val), fmt) + suffix
-              },
-            })
-            gsap.from(el, { opacity: 0, y: 24, duration: 0.7, ease: 'power3.out' })
+        gsap.from(el, { opacity: 0, y: 24, duration: 0.7, ease: 'power3.out', delay: 0.35 + idx * 0.08 })
+        gsap.to(obj, {
+          val: target,
+          duration: 2,
+          delay: 0.35 + idx * 0.08,
+          ease: 'power3.out',
+          onUpdate: () => {
+            const display = el.querySelector<HTMLSpanElement>('.ov-stat-num')
+            if (display) display.textContent = formatValue(Math.round(obj.val), fmt) + suffix
           },
         })
       })
 
-      // ── Location strip slides up ──
+      // Location strip slides up
       gsap.from('.ov-location', {
         opacity: 0, y: 24,
         duration: 0.8,
         ease: 'power3.out',
-        scrollTrigger: { trigger: '.ov-location', start: 'top 88%' },
+        delay: 0.65,
       })
 
-      // ── Image grid stagger ──
+      // Image grid stagger
       gsap.from('.ov-img', {
         opacity: 0, y: 30, scale: 0.97,
         duration: 0.85,
         stagger: 0.1,
         ease: 'power3.out',
-        scrollTrigger: { trigger: '.ov-img', start: 'top 88%' },
+        delay: 0.75,
       })
     }, sectionRef)
 
@@ -85,14 +76,14 @@ export default function Overview() {
     <section
       ref={sectionRef}
       id="overview"
-      className="relative bg-ink py-28 lg:py-36 overflow-hidden"
+      className="relative bg-ink py-20 lg:py-28 overflow-hidden"
     >
       {/* Grid texture */}
       <div className="absolute inset-0 opacity-[0.025] bg-grid-gold" />
 
-      <div className="section-container lg:pl-72">
+      <div className="section-container">
         {/* Header */}
-        <div className="mb-20">
+        <div className="mb-16">
           <p className="ov-heading eyebrow mb-4">The Property</p>
           <h2 className="ov-heading display-lg max-w-2xl">
             Not a mall.{' '}
@@ -105,7 +96,7 @@ export default function Overview() {
         </div>
 
         {/* Animated stat counters */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16 mb-24">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16 mb-20">
           {STATS.map((s) => (
             <div
               key={s.label}
@@ -124,7 +115,7 @@ export default function Overview() {
         </div>
 
         {/* Location strip */}
-        <div className="ov-location border border-ink-border bg-ink-card mb-20">
+        <div className="ov-location border border-ink-border bg-ink-card mb-16">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-ink-border">
             {LOCATION_POINTS.map(({ label, sub }) => (
               <div key={label} className="px-8 py-6 text-center">

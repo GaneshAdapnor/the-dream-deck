@@ -1,5 +1,6 @@
 import { useInView } from 'react-intersection-observer'
 import { motion } from 'framer-motion'
+import { useDeck } from '../../context/DeckContext'
 
 const LEASING_TIERS = [
   {
@@ -45,12 +46,9 @@ const BRAND_LOGOS = [
   'LUSH', 'SEPHORA', 'PANDORA', 'PRIMARK', 'FOREVER 21', 'VICTORIA\'S SECRET',
 ]
 
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-}
-
 export default function Retail() {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true })
+  const { goToSlide } = useDeck()
 
   return (
     <section id="retail" className="relative bg-ink-2 py-28 lg:py-36 overflow-hidden">
@@ -116,7 +114,7 @@ export default function Retail() {
               </div>
               <button
                 type="button"
-                onClick={() => scrollTo('contact')}
+                onClick={() => goToSlide(7)}
                 className="font-sans text-xs tracking-widest uppercase text-gold hover:text-gold-light transition-colors flex items-center gap-2"
               >
                 {tier.cta} →
@@ -172,7 +170,7 @@ export default function Retail() {
             </div>
             <button
               type="button"
-              onClick={() => scrollTo('contact')}
+              onClick={() => goToSlide(7)}
               className="hidden md:block btn-gold shrink-0"
               data-cursor="Inquire"
             >

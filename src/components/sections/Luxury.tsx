@@ -1,13 +1,11 @@
 import { useInView } from 'react-intersection-observer'
 import { motion } from 'framer-motion'
 import { LUXURY_BRANDS } from '../../data/content'
-
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-}
+import { useDeck } from '../../context/DeckContext'
 
 export default function Luxury() {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true })
+  const { goToSlide } = useDeck()
 
   return (
     <section id="luxury" className="relative bg-ink py-28 lg:py-36 overflow-hidden">
@@ -71,7 +69,7 @@ export default function Luxury() {
               40 million+ potential customers within one hour — including the highest concentration
               of ultra-high-net-worth individuals in North America.
             </p>
-            <button onClick={() => scrollTo('contact')} className="btn-gold mb-6">
+            <button type="button" onClick={() => goToSlide(7)} className="btn-gold mb-6">
               Explore Luxury Leasing
             </button>
           </motion.div>

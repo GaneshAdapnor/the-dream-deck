@@ -1,20 +1,16 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useDeck } from '../context/DeckContext'
 
-gsap.registerPlugin(ScrollTrigger)
-
-// Replace with the official American Dream YouTube promo video ID
-const HERO_VIDEO_ID = 'wXa9KFT1Jg4'
-
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-}
+// Official American Dream promo — replace with updated ID if needed
+const HERO_VIDEO_ID = 'CYRcwGZjSh0'
+const HERO_BG_IMAGE = 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1920&q=85'
 
 export default function Hero() {
-  const rootRef     = useRef<HTMLElement>(null)
-  const headlineRef = useRef<HTMLDivElement>(null)
+  const rootRef      = useRef<HTMLElement>(null)
+  const headlineRef  = useRef<HTMLDivElement>(null)
   const [videoOpen, setVideoOpen] = useState(false)
+  const { goToSlide } = useDeck()
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -69,24 +65,6 @@ export default function Hero() {
         duration: 0.6,
         ease: 'power3.out',
       }, '-=0.3')
-
-      // Scroll arrow
-      tl.from('.hero-scroll', {
-        opacity: 0,
-        duration: 0.6,
-      }, '-=0.2')
-
-      // Subtle parallax on scroll
-      gsap.to('.hero-bg', {
-        yPercent: 20,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: rootRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
     }, rootRef)
 
     return () => ctx.revert()
@@ -101,13 +79,13 @@ export default function Hero() {
       id="hero"
       className="relative w-full h-screen min-h-[680px] flex items-center overflow-hidden"
     >
-      {/* ── YouTube Video Background ── */}
+      {/* ── Static Image Background ── */}
       <div className="hero-bg absolute inset-0 pointer-events-none overflow-hidden">
-        <iframe
-          src={`https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&loop=1&controls=0&playlist=${HERO_VIDEO_ID}&playsinline=1&rel=0&modestbranding=1&disablekb=1`}
-          title="bg"
-          allow="autoplay; encrypted-media"
-          className="yt-bg-iframe"
+        <img
+          src={HERO_BG_IMAGE}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
 
@@ -120,7 +98,7 @@ export default function Hero() {
       <div className="hero-line absolute top-0 left-0 right-0 h-px bg-gold-gradient" />
 
       {/* ── Content ── */}
-      <div className="relative z-10 lg:pl-64 px-6 md:px-12 w-full">
+      <div className="relative z-10 px-6 md:px-12 lg:px-16 w-full">
         <p className="hero-eyebrow eyebrow mb-6">
           East Rutherford, NJ · 10 Miles from Manhattan · Gateway to 40M Consumers
         </p>
@@ -172,7 +150,7 @@ export default function Hero() {
         <div className="flex flex-wrap gap-4">
           <button
             type="button"
-            onClick={() => scrollTo('retail')}
+            onClick={() => goToSlide(2)}
             className="hero-cta btn-gold"
             data-cursor="Leasing"
           >
@@ -180,7 +158,7 @@ export default function Hero() {
           </button>
           <button
             type="button"
-            onClick={() => scrollTo('events')}
+            onClick={() => goToSlide(6)}
             className="hero-cta btn-outline"
             data-cursor="Events"
           >
@@ -195,17 +173,6 @@ export default function Hero() {
             <PlayIcon />
             Watch the Story
           </button>
-        </div>
-      </div>
-
-      {/* ── Scroll indicator ── */}
-      <div
-        className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer"
-        onClick={() => scrollTo('overview')}
-      >
-        <span className="font-sans text-[10px] tracking-widest3 uppercase text-cream-dim">Scroll</span>
-        <div className="relative w-px h-14 overflow-hidden bg-cream-dim/20">
-          <div className="absolute top-0 left-0 w-full bg-gold animate-scroll-hint h-1/2" />
         </div>
       </div>
 

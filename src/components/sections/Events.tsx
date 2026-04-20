@@ -1,14 +1,8 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { EVENT_TYPES } from '../../data/content'
 import TiltCard from '../TiltCard'
-
-gsap.registerPlugin(ScrollTrigger)
-
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-}
+import { useDeck } from '../../context/DeckContext'
 
 const PAST_HIGHLIGHTS = [
   { type: 'Concert',      name: 'Pitbull Live at American Dream',                attendees: '12,000' },
@@ -19,37 +13,34 @@ const PAST_HIGHLIGHTS = [
 
 export default function Events() {
   const sectionRef = useRef<HTMLElement>(null)
+  const { goToSlide } = useDeck()
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from('.ev-heading', {
-        opacity: 0, y: 28, stagger: 0.1, duration: 0.85, ease: 'power3.out',
-        scrollTrigger: { trigger: '.ev-heading', start: 'top 82%' },
+        opacity: 0, y: 28, stagger: 0.1, duration: 0.85, ease: 'power3.out', delay: 0.1,
       })
       gsap.from('.ev-card', {
-        opacity: 0, y: 28, stagger: 0.07, duration: 0.75, ease: 'power3.out',
-        scrollTrigger: { trigger: '.ev-card', start: 'top 85%' },
+        opacity: 0, y: 28, stagger: 0.07, duration: 0.75, ease: 'power3.out', delay: 0.35,
       })
       gsap.from('.ev-row', {
-        opacity: 0, x: -20, stagger: 0.06, duration: 0.65, ease: 'power3.out',
-        scrollTrigger: { trigger: '.ev-row', start: 'top 85%' },
+        opacity: 0, x: -20, stagger: 0.06, duration: 0.65, ease: 'power3.out', delay: 0.55,
       })
       gsap.from('.ev-spec', {
-        opacity: 0, y: 16, stagger: 0.08, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: { trigger: '.ev-spec', start: 'top 88%' },
+        opacity: 0, y: 16, stagger: 0.08, duration: 0.7, ease: 'power3.out', delay: 0.65,
       })
     }, sectionRef)
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={sectionRef} id="events" className="relative bg-ink-2 py-28 lg:py-36 overflow-hidden">
+    <section ref={sectionRef} id="events" className="relative bg-ink-2 py-20 lg:py-28 overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] bg-gold-glow-corner" />
 
-      <div className="section-container lg:pl-72">
+      <div className="section-container">
 
         {/* Header */}
-        <div className="mb-16">
+        <div className="mb-14">
           <p className="ev-heading eyebrow mb-4">Events & Platform</p>
           <h2 className="ev-heading display-lg max-w-3xl">
             This isn't a building.{' '}
@@ -62,7 +53,7 @@ export default function Events() {
         </div>
 
         {/* Hero event image */}
-        <div className="relative mb-16 overflow-hidden group aspect-16-6">
+        <div className="relative mb-14 overflow-hidden group aspect-16-6">
           <img
             src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1400&q=80"
             alt="American Dream Events"
@@ -75,14 +66,19 @@ export default function Events() {
               <p className="font-display text-5xl text-cream italic">200K+</p>
               <p className="font-sans text-xs tracking-widest uppercase text-cream-muted">Sq ft of activatable event space</p>
             </div>
-            <button type="button" onClick={() => scrollTo('contact')} className="hidden md:block btn-gold" data-cursor="Book">
+            <button
+              type="button"
+              onClick={() => goToSlide(7)}
+              className="hidden md:block btn-gold"
+              data-cursor="Book"
+            >
               Book an Event
             </button>
           </div>
         </div>
 
         {/* Event type grid — TiltCard for 3D hover */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
           {EVENT_TYPES.map((ev) => (
             <TiltCard key={ev.title} intensity={8}>
               <div className="ev-card card-dark hover:border-gold/40 transition-all duration-300 group h-full">
@@ -98,7 +94,7 @@ export default function Events() {
 
         {/* Past highlights */}
         <p className="eyebrow mb-8">Past Event Highlights</p>
-        <div className="space-y-px mb-16">
+        <div className="space-y-px mb-12">
           {PAST_HIGHLIGHTS.map((h) => (
             <div
               key={h.name}
@@ -153,9 +149,12 @@ export default function Events() {
                 <p className="eyebrow mb-2">Venue Spotlight</p>
                 <h3 className="font-display text-3xl text-cream mb-3">{title}</h3>
                 <p className="body-md max-w-sm mb-4">{body}</p>
-                <button type="button" onClick={() => scrollTo('contact')}
+                <button
+                  type="button"
+                  onClick={() => goToSlide(7)}
                   className="self-start font-sans text-xs tracking-widest uppercase text-gold hover:text-gold-light transition-colors"
-                  data-cursor="Inquire">
+                  data-cursor="Inquire"
+                >
                   Inquire →
                 </button>
               </div>

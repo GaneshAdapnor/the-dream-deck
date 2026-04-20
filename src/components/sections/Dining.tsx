@@ -1,13 +1,11 @@
 import { useInView } from 'react-intersection-observer'
 import { motion } from 'framer-motion'
 import { DINING_CONCEPTS } from '../../data/content'
-
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-}
+import { useDeck } from '../../context/DeckContext'
 
 export default function Dining() {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true })
+  const { goToSlide } = useDeck()
 
   return (
     <section id="dining" className="relative bg-ink-2 py-28 lg:py-36 overflow-hidden">
@@ -125,7 +123,7 @@ export default function Dining() {
               white-tablecloth fine dining.
             </p>
           </div>
-          <button onClick={() => scrollTo('contact')} className="btn-gold shrink-0">
+          <button type="button" onClick={() => goToSlide(7)} className="btn-gold shrink-0">
             Explore F&B Leasing
           </button>
         </motion.div>
