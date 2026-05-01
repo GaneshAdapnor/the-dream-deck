@@ -114,7 +114,7 @@ export default function Retail() {
               </div>
               <button
                 type="button"
-                onClick={() => goToSlide(7)}
+                onClick={() => goToSlide(9)}
                 className="font-sans text-xs tracking-widest uppercase text-gold hover:text-gold-light transition-colors flex items-center gap-2"
               >
                 {tier.cta} →
@@ -170,7 +170,7 @@ export default function Retail() {
             </div>
             <button
               type="button"
-              onClick={() => goToSlide(7)}
+              onClick={() => goToSlide(9)}
               className="hidden md:block btn-gold shrink-0"
               data-cursor="Inquire"
             >

@@ -123,7 +123,7 @@ export default function Dining() {
               white-tablecloth fine dining.
             </p>
           </div>
-          <button type="button" onClick={() => goToSlide(7)} className="btn-gold shrink-0">
+          <button type="button" onClick={() => goToSlide(9)} className="btn-gold shrink-0">
             Explore F&B Leasing
           </button>
         </motion.div>

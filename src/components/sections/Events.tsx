@@ -68,7 +68,7 @@ export default function Events() {
             </div>
             <button
               type="button"
-              onClick={() => goToSlide(7)}
+              onClick={() => goToSlide(9)}
               className="hidden md:block btn-gold"
               data-cursor="Book"
             >
@@ -151,7 +151,7 @@ export default function Events() {
                 <p className="body-md max-w-sm mb-4">{body}</p>
                 <button
                   type="button"
-                  onClick={() => goToSlide(7)}
+                  onClick={() => goToSlide(9)}
                   className="self-start font-sans text-xs tracking-widest uppercase text-gold hover:text-gold-light transition-colors"
                   data-cursor="Inquire"
                 >

@@ -81,7 +81,7 @@ export default function Entertainment() {
             </p>
             <button
               type="button"
-              onClick={() => goToSlide(7)}
+              onClick={() => goToSlide(9)}
               className="btn-gold"
               data-cursor="Partner"
             >

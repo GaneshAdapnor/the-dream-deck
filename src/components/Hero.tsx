@@ -2,69 +2,41 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useDeck } from '../context/DeckContext'
 
-// Official American Dream promo — replace with updated ID if needed
-const HERO_VIDEO_ID = 'CYRcwGZjSh0'
-const HERO_BG_IMAGE = 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1920&q=85'
+// Embed IDs: primary = American Dream promo, ambient fill = aerial drone mall footage
+const HERO_VIDEO_ID  = 'CYRcwGZjSh0'
+const HERO_BG_IMAGE  = 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1920&q=85'
 
 export default function Hero() {
-  const rootRef      = useRef<HTMLElement>(null)
-  const headlineRef  = useRef<HTMLDivElement>(null)
+  const rootRef     = useRef<HTMLElement>(null)
   const [videoOpen, setVideoOpen] = useState(false)
   const { goToSlide } = useDeck()
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.3 })
+      const tl = gsap.timeline({ delay: 0.25 })
 
-      // Gold rule enters from left
       tl.from('.hero-line', {
-        scaleX: 0,
-        transformOrigin: 'left',
-        duration: 0.9,
-        ease: 'power4.out',
+        scaleX: 0, transformOrigin: 'left',
+        duration: 1.0, ease: 'power4.out',
       })
-
-      // Eyebrow
       tl.from('.hero-eyebrow', {
-        opacity: 0,
-        y: 14,
-        duration: 0.6,
-        ease: 'power3.out',
-      }, '-=0.5')
-
-      // Each title character
+        opacity: 0, y: 14, duration: 0.6, ease: 'power3.out',
+      }, '-=0.55')
       tl.from('.hero-char', {
-        y: '115%',
-        duration: 0.8,
-        stagger: 0.028,
-        ease: 'power4.out',
+        y: '115%', duration: 0.85, stagger: 0.026, ease: 'power4.out',
       }, '-=0.4')
-
-      // Subtitle
       tl.from('.hero-sub', {
-        opacity: 0,
-        y: 20,
-        duration: 0.7,
-        ease: 'power3.out',
+        opacity: 0, y: 20, duration: 0.7, ease: 'power3.out',
       }, '-=0.3')
-
-      // Tags
       tl.from('.hero-tag', {
-        opacity: 0,
-        y: 12,
-        stagger: 0.08,
-        duration: 0.5,
-        ease: 'power3.out',
+        opacity: 0, y: 12, stagger: 0.08, duration: 0.5, ease: 'power3.out',
       }, '-=0.4')
-
-      // CTAs
       tl.from('.hero-cta', {
-        opacity: 0,
-        y: 16,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: 'power3.out',
+        opacity: 0, y: 16, stagger: 0.1, duration: 0.6, ease: 'power3.out',
       }, '-=0.3')
+      tl.from('.hero-scroll', {
+        opacity: 0, duration: 0.5, ease: 'power2.out',
+      }, '-=0.2')
     }, rootRef)
 
     return () => ctx.revert()
@@ -79,20 +51,30 @@ export default function Hero() {
       id="hero"
       className="relative w-full h-screen min-h-[680px] flex items-center overflow-hidden"
     >
-      {/* ── Static Image Background ── */}
-      <div className="hero-bg absolute inset-0 pointer-events-none overflow-hidden">
+      {/* ── Ambient YouTube video (muted, autoplay, loop, no UI) ── */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <iframe
+          className="yt-bg-iframe border-0"
+          src={`https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_VIDEO_ID}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&disablekb=1&iv_load_policy=3`}
+          allow="autoplay; encrypted-media; fullscreen"
+          title=""
+          aria-hidden="true"
+        />
+        {/* Fallback static image (visible while video loads / blocked) */}
         <img
           src={HERO_BG_IMAGE}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover -z-10 animate-ken-burns"
         />
       </div>
 
-      {/* ── Overlays ── */}
-      <div className="absolute inset-0 bg-ink/65" />
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/20 via-transparent to-ink" />
-      <div className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/20 to-transparent" />
+      {/* ── Cinematic overlays ── */}
+      <div className="absolute inset-0 bg-ink/55" />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-transparent to-ink" />
+      <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/25 to-transparent" />
+      {/* Subtle film grain overlay */}
+      <div className="absolute inset-0 hero-grain opacity-[0.03] pointer-events-none" />
 
       {/* ── Top gold rule ── */}
       <div className="hero-line absolute top-0 left-0 right-0 h-px bg-gold-gradient" />
@@ -103,8 +85,8 @@ export default function Hero() {
           East Rutherford, NJ · 10 Miles from Manhattan · Gateway to 40M Consumers
         </p>
 
-        {/* Headline — split chars */}
-        <div ref={headlineRef}>
+        {/* Headline — split chars for stagger animation */}
+        <div>
           <div className="overflow-hidden mb-1">
             <div className="flex">
               {line1.split('').map((ch, i) => (
@@ -146,19 +128,19 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* CTAs */}
+        {/* CTAs — now correctly point to updated slide indices */}
         <div className="flex flex-wrap gap-4">
           <button
             type="button"
             onClick={() => goToSlide(2)}
             className="hero-cta btn-gold"
-            data-cursor="Leasing"
+            data-cursor="Explore"
           >
-            Explore Leasing
+            Explore the Opportunity
           </button>
           <button
             type="button"
-            onClick={() => goToSlide(6)}
+            onClick={() => goToSlide(8)}
             className="hero-cta btn-outline"
             data-cursor="Events"
           >
@@ -173,6 +155,14 @@ export default function Hero() {
             <PlayIcon />
             Watch the Story
           </button>
+        </div>
+      </div>
+
+      {/* ── Scroll hint ── */}
+      <div className="hero-scroll absolute bottom-8 right-8 hidden lg:flex flex-col items-center gap-2 opacity-40">
+        <span className="font-sans text-[9px] tracking-widest3 uppercase text-cream-muted rotate-90 mb-2">Scroll</span>
+        <div className="h-10 w-px bg-cream-dim relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-[40%] animate-scroll-hint bg-gold" />
         </div>
       </div>
 

@@ -14,15 +14,40 @@ interface Props {
   onGoTo: (i: number) => void
 }
 
+// Thumbnail preview images per section id
+const SECTION_THUMBS: Record<string, string> = {
+  hero:          'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=240&q=60',
+  overview:      'https://images.unsplash.com/photo-1519999482648-25049ddd37b1?w=240&q=60',
+  opportunity:   'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=240&q=60',
+  retail:        'https://images.unsplash.com/photo-1555529771-122e5d9f2341?w=240&q=60',
+  luxury:        'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=240&q=60',
+  dining:        'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=240&q=60',
+  entertainment: 'https://images.unsplash.com/photo-1562774053-701939374585?w=240&q=60',
+  'brand-viz':   'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=240&q=60',
+  events:        'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=240&q=60',
+  contact:       'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=240&q=60',
+}
+
 export default function DeckNav({ current, slides, onPrev, onNext, onGoTo }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const total = slides.length
 
   return (
     <>
       {/* ── Desktop Sidebar ── */}
       <nav className="hidden lg:flex fixed left-0 top-0 h-full w-56 z-50 flex-col justify-between py-12 px-8">
-        <div className="absolute inset-0 bg-ink/85 backdrop-blur-md border-r border-ink-border" />
+        {/* Background */}
+        <div className="absolute inset-0 bg-ink/90 backdrop-blur-md border-r border-ink-border" />
+
+        {/* Progress bar — right edge fills as deck progresses */}
+        <div className="absolute right-0 top-0 h-full w-px bg-ink-border">
+          <motion.div
+            className="absolute top-0 left-0 w-full bg-gold"
+            animate={{ height: `${((current + 1) / total) * 100}%` }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </div>
 
         {/* Logo */}
         <div className="relative z-10">
@@ -41,35 +66,65 @@ export default function DeckNav({ current, slides, onPrev, onNext, onGoTo }: Pro
           </button>
         </div>
 
-        {/* Slide list */}
+        {/* Slide list with hover thumbnails */}
         <div className="relative z-10 flex flex-col gap-0.5">
           {slides.map(({ id, label }, i) => {
             const isActive = current === i
+            const thumb    = SECTION_THUMBS[id]
+
             return (
-              <button
-                type="button"
+              <div
                 key={id}
-                onClick={() => onGoTo(i)}
-                className="group flex items-center gap-3 py-2 text-left transition-all duration-300"
+                className="relative"
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
               >
-                <span className={`flex-shrink-0 transition-all duration-300 ${
-                  isActive
-                    ? 'w-4 h-px bg-gold'
-                    : 'w-1.5 h-px bg-cream-dim group-hover:w-3 group-hover:bg-cream-muted'
-                }`} />
-                <span className={`font-sans text-[10px] tracking-widest uppercase transition-all duration-300 ${
-                  isActive ? 'text-gold' : 'text-cream-dim group-hover:text-cream-muted'
-                }`}>
-                  {label}
-                </span>
-              </button>
+                {/* Thumbnail preview — floats to the right of sidebar */}
+                <AnimatePresence>
+                  {hoveredIdx === i && thumb && (
+                    <motion.div
+                      initial={{ opacity: 0, x: -6, scale: 0.95 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: -4, scale: 0.97 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute left-full top-1/2 -translate-y-1/2 ml-3 w-28 h-18 overflow-hidden border border-gold/30 z-50 shadow-xl pointer-events-none"
+                      style={{ height: '72px' }}
+                    >
+                      <img
+                        src={thumb}
+                        alt={label}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-ink/20" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button
+                  type="button"
+                  onClick={() => onGoTo(i)}
+                  className="group flex items-center gap-3 py-2 text-left transition-all duration-300 w-full"
+                >
+                  {/* Accent indicator */}
+                  <span className={`flex-shrink-0 transition-all duration-300 ${
+                    isActive
+                      ? 'w-4 h-px bg-gold'
+                      : 'w-1.5 h-px bg-cream-dim group-hover:w-3 group-hover:bg-cream-muted'
+                  }`} />
+                  <span className={`font-sans text-[10px] tracking-widest uppercase transition-all duration-300 ${
+                    isActive ? 'text-gold' : 'text-cream-dim group-hover:text-cream-muted'
+                  }`}>
+                    {label}
+                  </span>
+                </button>
+              </div>
             )
           })}
         </div>
 
-        {/* Prev / Next / Counter / CTA */}
+        {/* Bottom controls */}
         <div className="relative z-10 flex flex-col gap-4">
-          {/* Arrows + slide counter */}
           <div className="flex items-center justify-between">
             <button
               type="button"
@@ -95,7 +150,7 @@ export default function DeckNav({ current, slides, onPrev, onNext, onGoTo }: Pro
           <button
             type="button"
             onClick={() => onGoTo(total - 1)}
-            className="w-full border border-gold text-gold font-sans text-[10px] tracking-widest uppercase py-3 px-4 hover:bg-gold hover:text-ink transition-all duration-300"
+            className="w-full border border-gold text-gold font-sans text-[10px] tracking-widest uppercase py-3 px-4 hover:bg-gold hover:text-ink transition-all duration-300 animate-pulse-gold"
           >
             Inquire Now
           </button>
@@ -133,6 +188,15 @@ export default function DeckNav({ current, slides, onPrev, onNext, onGoTo }: Pro
           </div>
         </div>
 
+        {/* Mobile progress bar */}
+        <div className="h-px bg-ink-border relative">
+          <motion.div
+            className="absolute top-0 left-0 h-full bg-gold"
+            animate={{ width: `${((current + 1) / total) * 100}%` }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </div>
+
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -140,7 +204,7 @@ export default function DeckNav({ current, slides, onPrev, onNext, onGoTo }: Pro
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22 }}
-              className="bg-ink-2/96 backdrop-blur-lg border-b border-ink-border"
+              className="bg-ink/96 backdrop-blur-lg border-b border-ink-border"
             >
               <div className="px-6 py-4 flex flex-col gap-1">
                 {slides.map(({ id, label }, i) => (
@@ -168,7 +232,7 @@ export default function DeckNav({ current, slides, onPrev, onNext, onGoTo }: Pro
         </AnimatePresence>
       </header>
 
-      {/* ── Mobile Prev / Next (bottom bar) ── */}
+      {/* ── Mobile bottom prev / next ── */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex border-t border-ink-border bg-ink/92 backdrop-blur-md">
         <button
           type="button"

@@ -69,7 +69,7 @@ export default function Luxury() {
               40 million+ potential customers within one hour — including the highest concentration
               of ultra-high-net-worth individuals in North America.
             </p>
-            <button type="button" onClick={() => goToSlide(7)} className="btn-gold mb-6">
+            <button type="button" onClick={() => goToSlide(9)} className="btn-gold mb-6">
               Explore Luxury Leasing
             </button>
           </motion.div>
