@@ -242,6 +242,41 @@
   transform-origin: left;
 }
 
+/* Contact section — ambient bottom glow */
+.contact-glow {
+  background: radial-gradient(ellipse at 50% 100%, rgba(201,151,58,0.08) 0%, transparent 60%);
+}
+
+/* Per-path accent glow (opacity animated via Framer Motion) */
+.path-glow-gold   { background: radial-gradient(ellipse at 50% 110%, rgba(201,151,58,0.16) 0%, transparent 68%); }
+.path-glow-purple { background: radial-gradient(ellipse at 50% 110%, rgba(168,85,247,0.16) 0%, transparent 68%); }
+.path-glow-sky    { background: radial-gradient(ellipse at 50% 110%, rgba(125,211,245,0.16) 0%, transparent 68%); }
+
+/* Per-path top-bar fill */
+.path-bar-gold   { background-color: #C9973A; }
+.path-bar-purple { background-color: #A855F7; }
+.path-bar-sky    { background-color: #7DD3F5; }
+
+/* Per-path stat text */
+.path-stat-gold   { color: #C9973A; }
+.path-stat-purple { color: #A855F7; }
+.path-stat-sky    { color: #7DD3F5; }
+
+/* Per-path CTA button border */
+.path-btn-gold   { border: 1px solid rgba(201,151,58,0.40); }
+.path-btn-purple { border: 1px solid rgba(168,85,247,0.40); }
+.path-btn-sky    { border: 1px solid rgba(125,211,245,0.40); }
+
+/* Scrolling brand marquee (Luxury section) */
+@keyframes marquee {
+  from { translate: 0 0; }
+  to   { translate: -50% 0; }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+  will-change: translate;
+}
+
 /* Film grain overlay for hero */
 .hero-grain {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");

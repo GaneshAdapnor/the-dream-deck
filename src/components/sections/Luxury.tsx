@@ -1,129 +1,160 @@
-import { useInView } from 'react-intersection-observer'
-import { motion } from 'framer-motion'
+import { useLayoutEffect, useRef } from 'react'
+import gsap from 'gsap'
 import { LUXURY_BRANDS } from '../../data/content'
 import { useDeck } from '../../context/DeckContext'
 
+const LUX_IMAGE =
+  'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1920&q=85'
+
+const FEATURES = [
+  {
+    title: 'Dedicated Entry',
+    body: 'Valet, concierge, and a distinct arrival experience designed for discerning shoppers.',
+  },
+  {
+    title: 'Curated Adjacencies',
+    body: "Alongside the world's most prestigious houses — curation that protects positioning.",
+  },
+  {
+    title: 'VIP Programming',
+    body: 'Private events, after-hours exclusives, and brand-specific client programming.',
+  },
+]
+
+const STATS = [
+  { value: '$2.5B+', label: 'Annual luxury retail potential in the NYC metro' },
+  { value: '40M+',   label: 'Consumers within one hour radius' },
+  { value: '10+',    label: 'Global prestige houses in residence' },
+]
+
 export default function Luxury() {
-  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true })
+  const rootRef = useRef<HTMLElement>(null)
   const { goToSlide } = useDeck()
 
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.15 })
+      tl.from('.lux-eyebrow', { opacity: 0, y: 14, duration: 0.6, ease: 'power3.out' })
+      tl.from('.lux-line', {
+        opacity: 0, y: 40, stagger: 0.1, duration: 0.9, ease: 'power4.out',
+      }, '-=0.3')
+      tl.from('.lux-body', { opacity: 0, y: 18, duration: 0.7, ease: 'power3.out' }, '-=0.35')
+      tl.from('.lux-cta',  { opacity: 0, y: 14, duration: 0.6, ease: 'power3.out' }, '-=0.2')
+      tl.from('.lux-stat', { opacity: 0, x: 28, stagger: 0.12, duration: 0.7, ease: 'power3.out' }, '-=0.6')
+      tl.from('.lux-feat', { opacity: 0, y: 16, stagger: 0.1, duration: 0.65, ease: 'power3.out' }, '-=0.4')
+      tl.from('.lux-marquee', { opacity: 0, duration: 0.5 }, '-=0.3')
+    }, rootRef)
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="luxury" className="relative bg-ink py-28 lg:py-36 overflow-hidden">
-      {/* Subtle gold texture in background */}
-      <div className="absolute inset-0 opacity-[0.025] bg-gold-blob-top-right" />
+    <section
+      ref={rootRef}
+      id="luxury"
+      className="relative w-full h-screen overflow-hidden"
+    >
+      {/* ── Full-bleed image ── */}
+      <div className="absolute inset-0">
+        <img
+          src={LUX_IMAGE}
+          alt="American Dream Luxury Wing"
+          className="w-full h-full object-cover animate-ken-burns"
+          loading="eager"
+        />
+      </div>
 
-      <div className="section-container lg:pl-72" ref={ref}>
-        {/* Split layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center mb-24">
-          {/* Left — Imagery */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
-          >
-            <div className="relative overflow-hidden aspect-3-4">
-              <img
-                src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=900&q=85"
-                alt="American Dream Luxury Wing"
-                loading="lazy"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
-            </div>
-            {/* Floating accent card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.4 }}
-              className="absolute -bottom-8 -right-8 bg-ink-card border border-gold/30 p-6 max-w-xs"
-            >
-              <p className="font-display text-4xl text-gold">$2.5B+</p>
-              <p className="font-sans text-xs tracking-widest uppercase text-cream-muted mt-2">
-                Annual luxury retail potential in the NYC metro catchment
-              </p>
-            </motion.div>
-          </motion.div>
+      {/* ── Cinematic overlays ── */}
+      <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/15" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-transparent to-ink/20" />
 
-          {/* Right — Copy */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="pt-8"
-          >
-            <p className="eyebrow mb-6">The Luxury Collection</p>
-            <h2 className="display-lg mb-8">
-              Where{' '}
-              <span className="shimmer-text font-display italic">prestige</span>
-              <br />
-              finds its audience.
-            </h2>
-            <p className="body-lg mb-8 max-w-md">
-              The Luxury Collection at American Dream is the premier luxury retail destination
-              in the greater New York metropolitan area. With dedicated entrances, curated
-              environments, and VIP services, it is built to match the expectation of the
-              world's most discerning consumers.
-            </p>
-            <p className="body-md mb-10 max-w-md">
-              40 million+ potential customers within one hour — including the highest concentration
-              of ultra-high-net-worth individuals in North America.
-            </p>
-            <button type="button" onClick={() => goToSlide(9)} className="btn-gold mb-6">
-              Explore Luxury Leasing
-            </button>
-          </motion.div>
-        </div>
+      {/* ── Left: editorial copy ── */}
+      <div className="absolute inset-y-0 left-0 w-full lg:w-[58%] flex flex-col justify-center px-8 md:px-14 lg:px-16 pb-20">
+        <p className="lux-eyebrow eyebrow mb-5">The Luxury Collection</p>
 
-        {/* Luxury brand names */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          <p className="eyebrow text-center mb-10">Current Luxury Tenants & Partners</p>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-ink-border">
-            {LUXURY_BRANDS.map((brand) => (
-              <div
-                key={brand}
-                className="bg-ink-card flex items-center justify-center py-8 px-4 hover:bg-ink-2 transition-colors group"
+        {/* Headline — lines animate individually */}
+        <div className="mb-8">
+          {['Where', 'prestige', 'finds its', 'audience.'].map((word, i) => (
+            <div key={i} className="overflow-hidden">
+              <p
+                className={`lux-line font-display text-[clamp(2.8rem,6.5vw,6rem)] leading-[0.88] tracking-tight ${
+                  i === 1 ? 'shimmer-text italic' : 'text-cream'
+                }`}
               >
-                <span className="font-display text-lg text-cream-dim group-hover:text-gold transition-colors duration-300 text-center tracking-wide">
-                  {brand}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Luxury differentiators */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.65 }}
-          className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8"
-        >
-          {[
-            {
-              title: 'Dedicated Entry Points',
-              body: 'Separate luxury access with valet, concierge, and a distinct arrival experience designed for high-net-worth shoppers.',
-            },
-            {
-              title: 'Curated Adjacencies',
-              body: 'Your brand positioned alongside the world\'s most prestigious houses — curation that protects positioning and elevates perception.',
-            },
-            {
-              title: 'VIP Programming',
-              body: 'Private shopping events, after-hours exclusives, and brand-specific programming that deepens client relationships.',
-            },
-          ].map(({ title, body }) => (
-            <div key={title} className="border-t border-gold/20 pt-6">
-              <div className="gold-line mb-4" />
-              <h3 className="font-display text-xl text-cream mb-3">{title}</h3>
-              <p className="body-md">{body}</p>
+                {word}
+              </p>
             </div>
           ))}
-        </motion.div>
+        </div>
+
+        <p className="lux-body font-sans text-base lg:text-lg text-cream-muted max-w-sm leading-relaxed mb-8">
+          The premier luxury destination in the greater NYC metro — 40M+ consumers within
+          one hour, including the highest concentration of UHNW individuals in North America.
+        </p>
+
+        <button
+          type="button"
+          onClick={() => goToSlide(9)}
+          className="lux-cta btn-gold self-start mb-10"
+          data-cursor="Leasing"
+        >
+          Reserve a Flagship Position
+        </button>
+
+        {/* Feature row */}
+        <div className="grid grid-cols-3 gap-5 max-w-md">
+          {FEATURES.map(({ title, body }) => (
+            <div key={title} className="lux-feat">
+              <div className="h-px w-6 bg-gold mb-3" />
+              <p className="font-sans text-[10px] tracking-widest uppercase text-gold mb-1">{title}</p>
+              <p className="font-sans text-[11px] text-cream-muted leading-relaxed">{body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Right: floating stat stack ── */}
+      <div className="hidden lg:flex absolute right-10 top-1/2 -translate-y-1/2 flex-col gap-3 w-60">
+        {STATS.map(({ value, label }, i) => (
+          <div
+            key={value}
+            className={`lux-stat border border-ink-border p-6 ${
+              i === 0
+                ? 'bg-ink/80 backdrop-blur-md border-gold/25'
+                : 'bg-ink/60 backdrop-blur-sm'
+            }`}
+          >
+            <p
+              className={`font-display leading-none ${
+                i === 0 ? 'text-5xl text-gold' : 'text-3xl text-cream'
+              }`}
+            >
+              {value}
+            </p>
+            {i === 0 && <div className="h-px w-8 bg-gold/30 my-3" />}
+            <p className="font-sans text-[10px] tracking-widest uppercase text-cream-muted mt-2 leading-relaxed">
+              {label}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Bottom: scrolling brand marquee ── */}
+      <div className="lux-marquee absolute bottom-0 left-0 right-0 border-t border-gold/15 bg-ink/70 backdrop-blur-sm overflow-hidden">
+        <div className="flex items-center py-4 gap-8">
+          <p className="shrink-0 font-sans text-[9px] tracking-widest2 uppercase text-gold/50 pl-6 pr-4">
+            Prestige Tenants ·
+          </p>
+          <div className="flex gap-12 animate-marquee">
+            {[...LUXURY_BRANDS, ...LUXURY_BRANDS, ...LUXURY_BRANDS].map((brand, i) => (
+              <span
+                key={i}
+                className="font-display text-sm text-cream-dim/55 tracking-widest whitespace-nowrap"
+              >
+                {brand}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )
