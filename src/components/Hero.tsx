@@ -2,9 +2,13 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useDeck } from '../context/DeckContext'
 
-// Embed IDs: primary = American Dream promo, ambient fill = aerial drone mall footage
-const HERO_VIDEO_ID  = 'CYRcwGZjSh0'
+// Ambient hero background — direct Pexels CDN (muted, autoplay, no user interaction needed)
+// Primary: Big Shopping Mall 1080p30 · Fallback: A Modern Shopping Mall 4K30
+const HERO_VIDEO_HD  = 'https://videos.pexels.com/video-files/1338593/1338593-hd_1920_1080_30fps.mp4'
+const HERO_VIDEO_UHD = 'https://videos.pexels.com/video-files/2252824/2252824-uhd_3840_2160_30fps.mp4'
 const HERO_BG_IMAGE  = 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1920&q=85'
+// YouTube video shown in the modal only (Watch the Story)
+const HERO_VIDEO_ID  = 'CYRcwGZjSh0'
 
 export default function Hero() {
   const rootRef     = useRef<HTMLElement>(null)
@@ -51,16 +55,22 @@ export default function Hero() {
       id="hero"
       className="relative w-full h-screen min-h-[680px] flex items-center overflow-hidden"
     >
-      {/* ── Ambient YouTube video (muted, autoplay, loop, no UI) ── */}
+      {/* ── Ambient background video — HTML5 <video>, autoplay guaranteed ── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <iframe
-          className="yt-bg-iframe border-0"
-          src={`https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_VIDEO_ID}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&disablekb=1&iv_load_policy=3`}
-          allow="autoplay; encrypted-media; fullscreen"
-          title=""
+        <video
+          className="yt-bg-iframe"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={HERO_BG_IMAGE}
           aria-hidden="true"
-        />
-        {/* Fallback static image (visible while video loads / blocked) */}
+          preload="auto"
+        >
+          <source src={HERO_VIDEO_HD}  type="video/mp4" />
+          <source src={HERO_VIDEO_UHD} type="video/mp4" />
+        </video>
+        {/* Static Ken Burns fallback — visible while video is loading */}
         <img
           src={HERO_BG_IMAGE}
           alt=""
